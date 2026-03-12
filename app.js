@@ -1,5 +1,4 @@
-const sections = ["usuarios", "configuracion", "plan_cuentas", "balance_inicial", "libro_diario", "libro_mayor", "hoja_trabajo", "balance_general", "inventario", "ayuda"];
-
+const sections = ["usuarios", "configuracion", "plan_cuentas", "balance_inicial", "libro_diario", "libro_mayor", "hoja_trabajo", "estado_resultados", "balance_general", "inventario", "ayuda"];
 function showSection(id, el) {
   sections.forEach(sec => {
     const node = document.getElementById(sec);
@@ -17,6 +16,7 @@ function showSection(id, el) {
   if (id === "libro_diario") { cargarSelectCuentas("asientoCuenta"); renderLibroDiarioSinTotales(); }
   if (id === "libro_mayor") { renderSelectMayor(); document.getElementById("balanzaContainer").style.display = "none"; }
   if (id === "hoja_trabajo") renderHojaTrabajo();
+  if (id === "estado_resultados") { document.getElementById("estadoResultadosContainer").style.display = "none"; }
   if (id === "balance_general") { document.getElementById("balanceGeneralContainer").style.display = "none"; }
   if (id === "inventario") renderInventario();
 }
@@ -147,12 +147,7 @@ function cargarConfiguracion() {
     return { ...defaults };
   }
 
-  const configFinal = {
-    ...defaults,
-    ...configGuardada
-  };
-
-  return configFinal;
+  return { ...defaults, ...configGuardada };
 }
 
 function renderConfiguracion() {
@@ -173,6 +168,56 @@ function renderConfiguracion() {
   if (editRepresentante) editRepresentante.value = c.representante || "";
 }
 
+function aplicarConfiguracionUI() {
+  const c = cargarConfiguracion();
+  const tituloSidebar = document.getElementById("sidebarEmpresa");
+  const logoSidebar = document.getElementById("sidebarLogo");
+
+  if (tituloSidebar) {
+    tituloSidebar.textContent = c.nombre.toUpperCase();
+  }
+
+  if (logoSidebar) {
+    if (c.logo) {
+      logoSidebar.src = c.logo;
+      logoSidebar.style.display = "block";
+    } else {
+      logoSidebar.style.display = "none";
+    }
+  }
+}
+
+// ESTA ES LA FUNCIÓN DEL BOTÓN QUE DEBE ESTAR EXACTAMENTE ASÍ
+window.guardarConfiguracion = function() {
+  const c = cargarConfiguracion();
+
+  c.nombre = document.getElementById("editNombre").value.trim() || "Panadería Chelo";
+  c.rubro = document.getElementById("editRubro").value.trim() || "-";
+  c.direccion = document.getElementById("editDireccion").value.trim() || "-";
+  c.telefono = document.getElementById("editTelefono").value.trim() || "-";
+  c.correo = document.getElementById("editCorreo").value.trim() || "-";
+  c.representante = document.getElementById("editRepresentante").value.trim() || "-";
+
+  const l = document.getElementById("editLogo");
+
+  if (l && l.files && l.files[0]) {
+    const r = new FileReader();
+    r.onload = function (e) {
+      c.logo = e.target.result || "";
+      guardarDB("py_config", c);
+      alert("Datos y logo guardados correctamente.");
+      renderConfiguracion();
+      aplicarConfiguracionUI();
+    };
+    r.readAsDataURL(l.files[0]);
+  } else {
+    guardarDB("py_config", c);
+    alert("Datos guardados correctamente.");
+    renderConfiguracion();
+    aplicarConfiguracionUI();
+  }
+};
+
 function guardarConfiguracion() {
   const c = cargarConfiguracion();
 
@@ -190,19 +235,18 @@ function guardarConfiguracion() {
     r.onload = function (e) {
       c.logo = e.target.result || "";
       guardarDB("py_config", c);
-      alert("Datos guardados.");
+      alert("Datos guardados correctamente.");
       renderConfiguracion();
-      aplicarConfiguracionUI(); // <--- ¡AÑADIR ESTO AQUÍ!
+      aplicarConfiguracionUI(); 
     };
     r.readAsDataURL(l.files[0]);
   } else {
     guardarDB("py_config", c);
-    alert("Datos guardados.");
+    alert("Datos guardados correctamente.");
     renderConfiguracion();
-    aplicarConfiguracionUI(); // <--- ¡Y AÑADIR ESTO AQUÍ!
+    aplicarConfiguracionUI(); 
   }
 }
-
 // ====== 3. PLAN DE CUENTAS ======
 function cargarCuentas() {
   return cargarDB("py_cuentas", [
@@ -428,7 +472,23 @@ function renderMayorPorCuenta() {
   if (!sel) return;
 
   const movs = obtenerTodosLosMovimientos().filter(x => x.cuenta === sel);
-  document.getElementById("mayorCuentaBody").innerHTML = movs.map(m => `<tr><td>${m.fecha}</td><td>${m.folio}</td><td>${m.detalle}</td><td>${m.debe}</td><td>${m.haber}</td></tr>`).join("");
+  if (movs.length === 0) return;
+  
+  // Identificamos la naturaleza de la cuenta para saber si suma o resta
+  const codigo = movs[0].codigo;
+  const nat = determinarNaturaleza(codigo);
+  let saldo = 0;
+
+  document.getElementById("mayorCuentaBody").innerHTML = movs.map(m => {
+    if (nat === "deudora") {
+      saldo += (m.debe - m.haber);
+    } else {
+      saldo += (m.haber - m.debe);
+    }
+    
+    // Agregamos la nueva columna de saldo al final
+    return `<tr><td>${m.fecha}</td><td>${m.folio}</td><td>${m.detalle}</td><td>${m.debe.toFixed(2)}</td><td>${m.haber.toFixed(2)}</td><td><strong>${saldo.toFixed(2)}</strong></td></tr>`;
+  }).join("");
 }
 
 function renderBalanzaComprobacion() {
@@ -436,31 +496,57 @@ function renderBalanzaComprobacion() {
   const r = {};
 
   d.forEach(m => {
-    if (!r[m.codigo]) r[m.codigo] = { cuenta: m.cuenta, d: 0, h: 0 };
+    if (!r[m.codigo]) r[m.codigo] = { cuenta: m.cuenta, d: 0, h: 0, nat: determinarNaturaleza(m.codigo) };
     r[m.codigo].d += m.debe;
     r[m.codigo].h += m.haber;
   });
 
   const arr = Object.keys(r).map(k => ({ codigo: k, ...r[k] })).sort((a, b) => a.codigo.localeCompare(b.codigo, undefined, { numeric: true }));
-  let tD = 0, tH = 0;
+  
+  // Variables para las 4 columnas
+  let tD = 0, tH = 0, tSD = 0, tSA = 0; 
 
   document.getElementById("balanzaBody").innerHTML = arr.map(x => {
     tD += x.d;
     tH += x.h;
-    return `<tr><td>${x.codigo}</td><td>${x.cuenta}</td><td>${x.d.toFixed(2)}</td><td>${x.h.toFixed(2)}</td></tr>`;
+    
+    let sDeudor = 0, sAcreedor = 0;
+    
+    // Calculamos si el saldo final queda en el Deudor o el Acreedor
+    if (x.nat === "deudora") {
+        sDeudor = x.d - x.h;
+        if (sDeudor < 0) { sAcreedor = Math.abs(sDeudor); sDeudor = 0; } // Por si hay sobregiro
+    } else {
+        sAcreedor = x.h - x.d;
+        if (sAcreedor < 0) { sDeudor = Math.abs(sAcreedor); sAcreedor = 0; }
+    }
+
+    tSD += sDeudor;
+    tSA += sAcreedor;
+
+    // Generamos las 4 columnas de datos
+    return `<tr><td>${x.codigo}</td><td>${x.cuenta}</td><td>${x.d.toFixed(2)}</td><td>${x.h.toFixed(2)}</td><td>${sDeudor.toFixed(2)}</td><td>${sAcreedor.toFixed(2)}</td></tr>`;
   }).join("");
 
+  // Actualizamos totales en pantalla
   document.getElementById("totSumasDebe").textContent = tD.toFixed(2);
   document.getElementById("totSumasHaber").textContent = tH.toFixed(2);
+  
+  const elSD = document.getElementById("totSaldosDeudor");
+  const elSA = document.getElementById("totSaldosAcreedor");
+  if(elSD) elSD.textContent = tSD.toFixed(2);
+  if(elSA) elSA.textContent = tSA.toFixed(2);
+
   document.getElementById("balanzaContainer").style.display = "block";
 
+  // Verificamos que tanto Sumas como Saldos cuadren
   const m = document.getElementById("mensaje_balanza_cuadre");
-  if (Math.abs(tD - tH) < 0.01 && tD > 0) {
+  if (Math.abs(tD - tH) < 0.01 && Math.abs(tSD - tSA) < 0.01 && tD > 0) {
     m.style.color = "green";
-    m.innerHTML = "La Balanza está CUADRADA";
+    m.innerHTML = "La Balanza de Sumas y Saldos está PERFECTAMENTE CUADRADA.";
   } else {
     m.style.color = "red";
-    m.innerHTML = "La Balanza NO Cuadra";
+    m.innerHTML = "La Balanza NO Cuadra. Revise los movimientos en el Diario.";
   }
 }
 
@@ -499,6 +585,57 @@ function exportarHojaPDF() {
   const doc = new jsPDF();
   doc.text("HOJA DE TRABAJO", 20, 20);
   doc.save("Hoja_Trabajo.pdf");
+}
+
+// ====== 7.5 ESTADO DE RESULTADOS ======
+function renderEstadoResultados() {
+  const d = obtenerTodosLosMovimientos();
+  const aj = cargarDB("py_ajustes", {});
+  const r = {};
+
+  d.forEach(m => {
+    if (!r[m.codigo]) r[m.codigo] = { cuenta: m.cuenta, d: 0, h: 0 };
+    r[m.codigo].d += m.debe;
+    r[m.codigo].h += m.haber;
+  });
+
+  let htmlI = "", htmlC = "", htmlG = "";
+  let tI = 0, tC = 0, tG = 0;
+
+  Object.keys(r).sort().forEach(k => {
+    let nat = determinarNaturaleza(k);
+    let saldo = 0;
+    let ajuste_cuenta = aj[k] || 0;
+
+    if (nat === "deudora") saldo = (r[k].d - r[k].h) + ajuste_cuenta;
+    else saldo = (r[k].h - r[k].d) + ajuste_cuenta;
+
+    if (k.startsWith("4") && saldo !== 0) { tI += saldo; htmlI += `<tr><td>${r[k].cuenta}</td><td>${saldo.toFixed(2)}</td></tr>`; }
+    if (k.startsWith("6") && saldo !== 0) { tC += saldo; htmlC += `<tr><td>${r[k].cuenta}</td><td>${saldo.toFixed(2)}</td></tr>`; }
+    if (k.startsWith("5") && saldo !== 0) { tG += saldo; htmlG += `<tr><td>${r[k].cuenta}</td><td>${saldo.toFixed(2)}</td></tr>`; }
+  });
+
+  document.getElementById("erIngresosBody").innerHTML = htmlI || `<tr><td colspan="2">Sin ingresos</td></tr>`;
+  document.getElementById("erCostosBody").innerHTML = htmlC || `<tr><td colspan="2">Sin costos</td></tr>`;
+  document.getElementById("erGastosBody").innerHTML = htmlG || `<tr><td colspan="2">Sin gastos</td></tr>`;
+
+  let utilidadBruta = tI - tC;
+  let utilidadNeta = utilidadBruta - tG;
+
+  document.getElementById("erUtilidadBruta").textContent = `Bs ${utilidadBruta.toFixed(2)}`;
+  
+  const utilNetaEl = document.getElementById("erUtilidadNeta");
+  utilNetaEl.textContent = `Bs ${utilidadNeta.toFixed(2)}`;
+  
+  if(utilidadNeta < 0) {
+    utilNetaEl.style.color = "#c62828";
+    utilNetaEl.parentElement.querySelector("h3").textContent = "PÉRDIDA NETA DEL EJERCICIO";
+  } else {
+    utilNetaEl.style.color = "var(--sidebar-color)";
+    utilNetaEl.parentElement.querySelector("h3").textContent = "UTILIDAD NETA DEL EJERCICIO";
+  }
+
+  document.getElementById("estadoResultadosContainer").style.display = "block";
 }
 
 // ====== 8. BALANCE GENERAL ======
