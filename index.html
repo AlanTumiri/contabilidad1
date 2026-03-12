@@ -144,6 +144,7 @@
           <tbody id="balanceBody"></tbody>
         </table>
       </div>
+      <button class="btn-soft" onclick="exportarBalanceInicialPDF()">Exportar Balance Inicial a PDF</button>
       <hr>
       <h3>Registrar Saldo Inicial</h3>
       <div class="toolbar" style="margin-bottom: 15px;">
@@ -165,6 +166,24 @@
     </div>
 
     <div id="libro_diario" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Libro Diario</h2>
+      <hr>
+
+      <button class="btn-soft" onclick="exportarDiarioPDF()">Exportar Libro Diario a PDF</button>
+
+      <hr>
+
+      <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+        <div style="flex:1;">
+          <label style="font-weight:900;">Fecha</label>
+          <input type="date" id="asientoFecha" class="input"/>
+        </div>
+        <div style="flex:2;">
+          <label style="font-weight:900;">Cuenta</label>
+          <select id="asientoCuenta" class="input"></select>
+        </div>
+      </div>
+
       <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
         <div style="flex:1;"><label style="font-weight:900;">Folio / Nº Asiento</label><input type="text" id="asientoFolio" class="input"/></div>
         <div style="flex:1;"><label style="font-weight:900;">Debe</label><input type="number" id="asientoDebe" class="input" value="0.00" step="0.01"/></div>
@@ -190,22 +209,30 @@
         </div>
       </div>
 
-      <label style="font-weight:900;">Glosa</label><input type="text" id="asientoDetalle" class="input" style="margin-bottom: 15px;"/>
+      <label style="font-weight:900;">Glosa</label>
+      <input type="text" id="asientoDetalle" class="input" style="margin-bottom: 15px;"/>
+
       <button class="btn-add" onclick="guardarAsientoConIVA()">Agregar al Diario</button>
+
       <hr>
       <h3>Eliminar Asiento</h3>
       <input type="number" id="asiento_eliminar" class="input" placeholder="Ingrese el ID del registro a eliminar:" style="margin-bottom: 15px;"/>
       <button class="btn-delete-action" onclick="eliminarAsientoInput()">Eliminar registro</button>
+
       <hr>
+
       <div style="text-align: center; margin-bottom: 20px;">
         <button class="btn-add" style="background:#e65100; font-size: 1.1rem; padding: 15px 30px;" onclick="verificarTotalesDiario()">Verificar y calcular totales</button>
       </div>
+
       <div id="diarioTotalesContainer" style="display:none;">
         <div class="stats-grid" style="margin-bottom: 20px;">
           <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totLibroDebe">Bs 0.00</p></div></div>
           <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totLibroHaber">Bs 0.00</p></div></div>
         </div>
+
         <div id="estadoCuadreLibro" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-bottom: 20px;"></div>
+
         <div class="table-responsive" style="margin-top: 20px;">
           <table>
             <thead><tr><th>Folio</th><th>Total Debe</th><th>Total Haber</th><th>Estado</th></tr></thead>
@@ -213,6 +240,7 @@
           </table>
         </div>
       </div>
+
       <div class="table-responsive">
         <table>
           <thead><tr><th>ID</th><th>Fecha</th><th>Código</th><th>Cuenta</th><th>Folio</th><th>Debe</th><th>Haber</th><th>Detalle</th></tr></thead>
@@ -225,6 +253,11 @@
       <h2 style="justify-content: center; font-size: 2rem;">Libro Mayor</h2>
       <p style="text-align:center; color:var(--warn); font-weight:bold;">NOTA: El Mayor y la Balanza incluyen los saldos de Apertura y los ajustes contables automáticamente.</p>
       <hr>
+
+      <button class="btn-soft" onclick="exportarMayorPDF()">Exportar Libro Mayor a PDF</button>
+
+      <hr>
+
       <h3 style="color:var(--sidebar-color); margin-bottom: 15px;">Seleccionar Cuenta</h3>
       <select id="selectMayorCuenta" class="input" style="max-width: 400px; margin-bottom: 20px;" onchange="renderMayorPorCuenta()"></select>
 
@@ -256,6 +289,11 @@
     <div id="hoja_trabajo" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Hoja de Trabajo</h2>
       <hr>
+
+      <button class="btn-soft" onclick="exportarHojaPDF()">Exportar Hoja de Trabajo a PDF</button>
+
+      <hr>
+
       <div class="table-responsive">
         <table>
           <thead><tr><th>Código</th><th>Cuenta</th><th>Saldo Ajustado</th></tr></thead>
@@ -295,9 +333,14 @@
 
     <div id="estado_resultados" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Estado de Resultados</h2>
+      <hr>
+
+      <button class="btn-soft" onclick="exportarEstadoResultadosPDF()">Exportar Estado de Resultados a PDF</button>
+
+      <hr>
+
       <div id="estadoResultadosMensaje" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center; display:none;"></div>
       <div id="estadoResultadosContainer" style="display:none;">
-        <hr>
         <h3>Ingresos</h3>
         <div class="table-responsive">
           <table>
@@ -331,9 +374,14 @@
 
     <div id="balance_general" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Balance General</h2>
+      <hr>
+
+      <button class="btn-soft" onclick="exportarBalancePDF()">Exportar Balance General a PDF</button>
+
+      <hr>
+
       <div id="balanceGeneralMensaje" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center; display:none;"></div>
       <div id="balanceGeneralContainer" style="display:none;">
-        <hr>
         <div id="mensaje_balance_cuadre" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center;"></div>
 
         <h3>Activos</h3>
@@ -373,6 +421,10 @@
     <div id="inventario" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">INVENTARIO</h2>
       <p class="section-hint">Los movimientos de inventario pueden generar asiento contable automático si completas los datos contables del movimiento.</p>
+      <hr>
+
+      <button class="btn-soft" onclick="exportarInventarioPDF()">Exportar Inventario a PDF</button>
+
       <hr>
 
       <h3>Registrar producto</h3>
