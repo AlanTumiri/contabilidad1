@@ -10,14 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
- <div class="sidebar" id="sidebar">
+  <div class="sidebar" id="sidebar">
     <img id="sidebarLogo" src="" alt="Logo Empresa" style="display: none; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin: 0 auto 10px auto; border: 2px solid var(--accent-color);">
-    
     <h2 id="sidebarEmpresa">PANADERÍA CHELO</h2>
-    
     <div class="sidebar-subtitle">Gestión Contable & Stock</div>
+
     <nav>
       <a href="#" class="active" onclick="showSection('usuarios', this)">Usuarios</a>
       <a href="#" onclick="showSection('configuracion', this)">Configuración Inicial</a>
@@ -57,7 +55,10 @@
       <input type="text" id="nuevo_usuario" class="input" placeholder="Nombre de usuario" style="margin-bottom: 12px;"/>
       <input type="password" id="nueva_contra" class="input" placeholder="Contraseña" style="margin-bottom: 12px;"/>
       <select id="nuevo_rol" class="input" style="margin-bottom: 15px;">
-        <option value="Administrador">Administrador</option><option value="Gerente">Gerente</option><option value="Contador">Contador</option><option value="Empleado">Empleado</option>
+        <option value="Administrador">Administrador</option>
+        <option value="Gerente">Gerente</option>
+        <option value="Contador">Contador</option>
+        <option value="Empleado">Empleado</option>
       </select>
       <button class="btn-add" onclick="guardarUsuario()">Guardar usuario</button>
       <hr>
@@ -66,9 +67,10 @@
       <button class="btn-delete-action" onclick="eliminarUsuarioInput()">Eliminar usuario</button>
     </div>
 
-<div id="configuracion" class="admin-section" style="display:none;">
+    <div id="configuracion" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Configuración de la Empresa</h2>
       <hr>
+
       <div class="cards-2">
         <div class="mini-card" style="background: #faf7f2; border-left: 4px solid var(--accent-color);">
           <h3 style="color: var(--sidebar-color); margin-bottom: 15px; font-weight: 900;">Datos Generales</h3>
@@ -76,21 +78,41 @@
           <p style="margin-bottom: 10px;"><strong>Rubro:</strong> Elaboración y venta de productos panificados</p>
           <p><strong>Dirección:</strong> Av. Principal #123</p>
         </div>
+
+        <div class="mini-card" style="background: #faf7f2; border-left: 4px solid var(--accent-color);">
+          <h3 style="color: var(--sidebar-color); margin-bottom: 15px; font-weight: 900;">Contacto y Representación</h3>
+          <p style="margin-bottom: 10px;"><strong>Teléfono:</strong> +591 68985205</p>
+          <p style="margin-bottom: 10px;"><strong>Correo Electrónico:</strong> contacto@panaderia.com</p>
+          <p><strong>Representante Legal:</strong> Administrador General</p>
+        </div>
+
+        <div class="mini-card" style="background: #faf7f2; border-left: 4px solid var(--accent-color);">
+          <h3 style="color: var(--sidebar-color); margin-bottom: 15px; font-weight: 900;">Parámetros Tributarios</h3>
+          <p style="margin-bottom: 10px;"><strong>IVA:</strong> <span id="configIvaPorcentaje">13</span>%</p>
+          <p><strong>Estado:</strong> Implementado en la página</p>
+        </div>
+
         <div class="mini-card" style="background: #faf7f2; border-left: 4px solid var(--accent-color);">
           <h3 style="color: var(--sidebar-color); margin-bottom: 15px; font-weight: 900;">Contacto y Representación</h3>
           <p style="margin-bottom: 10px;"><strong>Teléfono:</strong> +591 78652797</p>
           <p style="margin-bottom: 10px;"><strong>Correo Electrónico:</strong> contacto@panaderia.com</p>
           <p><strong>Representante Legal:</strong> Administrador General</p>
         </div>
+
+        <div class="mini-card" style="background: #faf7f2; border-left: 4px solid var(--accent-color);">
+          <h3 style="color: var(--sidebar-color); margin-bottom: 15px; font-weight: 900;">Parámetros Tributarios</h3>
+          <p style="margin-bottom: 10px;"><strong>IVA:</strong> <span id="configIvaPorcentaje">13</span>%</p>
+          <p><strong>Estado:</strong> Implementado en la página</p>
+        </div>
       </div>
-    </div>
-      <h3>Subir / Cambiar Logo</h3>
-      <input type="file" id="editLogo" class="input" accept="image/png, image/jpeg, image/jpg" style="margin-bottom: 20px;"/>
-      <button class="btn-add" onclick="guardarConfiguracion()">Guardar Cambios</button>
     </div>
 
     <div id="plan_cuentas" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Plan de Cuentas</h2>
+      <p class="section-hint">
+        Las cuentas de movimiento deben ser cuentas operativas, por ejemplo: 1.1.01, 2.1.01, 4.1.01.
+        Las cuentas título (1, 2, 3, 4, 5, 6) no se usan para registrar montos.
+      </p>
       <hr>
       <div class="table-responsive" style="margin-bottom: 20px;">
         <table>
@@ -101,7 +123,7 @@
       <button class="btn-soft" onclick="exportarCuentasPDF()">Exportar Plan de Cuentas a PDF</button>
       <hr>
       <h3>Agregar Cuenta</h3>
-      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+      <div style="display:flex; gap:10px; margin-bottom: 15px; flex-wrap:wrap;">
         <input type="text" id="nueva_cuenta_codigo" class="input" placeholder="Código (Ej: 1.1.01)"/>
         <input type="text" id="nueva_cuenta_nombre" class="input" placeholder="Nombre (Ej: Caja)"/>
       </div>
@@ -114,10 +136,11 @@
 
     <div id="balance_inicial" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Asiento de Apertura</h2>
+      <p class="section-hint">Solo se admiten cuentas operativas de Activo, Pasivo y Patrimonio.</p>
       <hr>
       <div class="table-responsive">
         <table>
-          <thead><tr><th>Código</th><th>Cuenta</th><th>Monto Apertura</th></tr></thead>
+          <thead><tr><th>#</th><th>Código</th><th>Cuenta</th><th>Monto Apertura</th></tr></thead>
           <tbody id="balanceBody"></tbody>
         </table>
       </div>
@@ -125,7 +148,7 @@
       <h3>Registrar Saldo Inicial</h3>
       <div class="toolbar" style="margin-bottom: 15px;">
         <select id="selectCuentaBalance" class="input" style="flex: 2;"></select>
-        <input type="number" id="montoBalance" class="input" placeholder="Monto Bs" style="flex: 1;"/>
+        <input type="number" id="montoBalance" class="input" placeholder="Monto Bs" style="flex: 1;" step="0.01"/>
       </div>
       <button class="btn-add" onclick="agregarSaldoInicial()">Agregar al Asiento</button>
       <hr>
@@ -142,34 +165,53 @@
     </div>
 
     <div id="libro_diario" class="admin-section" style="display:none;">
-      <h2 style="justify-content: center; font-size: 2rem;">Libro Diario</h2>
-      <hr>
-      <h3>Registrar Asiento</h3>
-      <div style="display:flex; gap:10px; margin-bottom:12px;">
-        <div style="flex:1;"><label style="font-weight:900;">Fecha</label><input type="date" id="asientoFecha" class="input"/></div>
-        <div style="flex:2;"><label style="font-weight:900;">Cuenta</label><select id="asientoCuenta" class="input"></select></div>
+      <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+        <div style="flex:1;"><label style="font-weight:900;">Folio / Nº Asiento</label><input type="text" id="asientoFolio" class="input"/></div>
+        <div style="flex:1;"><label style="font-weight:900;">Debe</label><input type="number" id="asientoDebe" class="input" value="0.00" step="0.01"/></div>
+        <div style="flex:1;"><label style="font-weight:900;">Haber</label><input type="number" id="asientoHaber" class="input" value="0.00" step="0.01"/></div>
       </div>
-      <div style="display:flex; gap:10px; margin-bottom:12px;">
-        <div style="flex:1;"><label style="font-weight:900;">Folio</label><input type="text" id="asientoFolio" class="input"/></div>
-        <div style="flex:1;"><label style="font-weight:900;">Debe</label><input type="number" id="asientoDebe" class="input" value="0.00"/></div>
-        <div style="flex:1;"><label style="font-weight:900;">Haber</label><input type="number" id="asientoHaber" class="input" value="0.00"/></div>
+
+      <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+        <div style="flex:1;">
+          <label style="font-weight:900;">Base imponible</label>
+          <input type="number" id="asientoBase" class="input" value="0.00" step="0.01"/>
+        </div>
+        <div style="flex:1;">
+          <label style="font-weight:900;">IVA</label>
+          <input type="number" id="asientoIVA" class="input" value="0.00" step="0.01"/>
+        </div>
+        <div style="flex:1;">
+          <label style="font-weight:900;">Tipo IVA</label>
+          <select id="asientoTipoIVA" class="input">
+            <option value="">Sin IVA</option>
+            <option value="credito">Crédito Fiscal (Compra)</option>
+            <option value="debito">Débito Fiscal (Venta)</option>
+          </select>
+        </div>
       </div>
+
       <label style="font-weight:900;">Glosa</label><input type="text" id="asientoDetalle" class="input" style="margin-bottom: 15px;"/>
-      <button class="btn-add" onclick="guardarAsiento()">Agregar al Diario</button>
+      <button class="btn-add" onclick="guardarAsientoConIVA()">Agregar al Diario</button>
       <hr>
       <h3>Eliminar Asiento</h3>
       <input type="number" id="asiento_eliminar" class="input" placeholder="Ingrese el ID del registro a eliminar:" style="margin-bottom: 15px;"/>
       <button class="btn-delete-action" onclick="eliminarAsientoInput()">Eliminar registro</button>
       <hr>
       <div style="text-align: center; margin-bottom: 20px;">
-          <button class="btn-add" style="background:#e65100; font-size: 1.1rem; padding: 15px 30px;" onclick="verificarTotalesDiario()">Verificar y calcular totales</button>
+        <button class="btn-add" style="background:#e65100; font-size: 1.1rem; padding: 15px 30px;" onclick="verificarTotalesDiario()">Verificar y calcular totales</button>
       </div>
       <div id="diarioTotalesContainer" style="display:none;">
-          <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totLibroDebe">Bs 0.00</p></div></div>
-            <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totLibroHaber">Bs 0.00</p></div></div>
-          </div>
-          <div id="estadoCuadreLibro" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-bottom: 20px;"></div>
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totLibroDebe">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totLibroHaber">Bs 0.00</p></div></div>
+        </div>
+        <div id="estadoCuadreLibro" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-bottom: 20px;"></div>
+        <div class="table-responsive" style="margin-top: 20px;">
+          <table>
+            <thead><tr><th>Folio</th><th>Total Debe</th><th>Total Haber</th><th>Estado</th></tr></thead>
+            <tbody id="cuadrePorFolioBody"></tbody>
+          </table>
+        </div>
       </div>
       <div class="table-responsive">
         <table>
@@ -177,189 +219,318 @@
           <tbody id="libroDiarioBody"></tbody>
         </table>
       </div>
-      <hr>
-      <h3>Exportar Libro Diario</h3>
-      <div class="toolbar">
-          <button class="btn-soft" onclick="exportarDiarioExcel()">Exportar a Excel</button>
-          <button class="btn-soft" onclick="exportarDiarioPDF()">Exportar a PDF</button>
-      </div>
     </div>
 
     <div id="libro_mayor" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Libro Mayor</h2>
-      <p style="text-align:center; color:var(--warn); font-weight:bold;">NOTA: El Mayor y la Balanza ahora incluyen los saldos de Apertura automáticamente.</p>
+      <p style="text-align:center; color:var(--warn); font-weight:bold;">NOTA: El Mayor y la Balanza incluyen los saldos de Apertura y los ajustes contables automáticamente.</p>
       <hr>
       <h3 style="color:var(--sidebar-color); margin-bottom: 15px;">Seleccionar Cuenta</h3>
       <select id="selectMayorCuenta" class="input" style="max-width: 400px; margin-bottom: 20px;" onchange="renderMayorPorCuenta()"></select>
-      
+
       <div class="table-responsive" style="margin-bottom: 30px;">
         <table>
-          <thead><tr><th>Fecha</th><th>Folio</th><th>Detalle</th><th>Debe</th><th>Haber</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Folio</th><th>Detalle</th><th>Debe</th><th>Haber</th><th>Saldo</th></tr></thead>
           <tbody id="mayorCuentaBody"></tbody>
         </table>
       </div>
 
-      <hr>
-      <h2 style="justify-content: center; font-size: 2rem;">Balanza de Comprobación</h2>
-      <button class="btn-add" style="margin-bottom: 20px;" onclick="renderBalanzaComprobacion()">Generar Balanza Completa</button>
-
-      <div id="balanzaContainer" style="display: none;">
-          <div class="table-responsive">
-            <table>
-              <thead><tr><th>Código</th><th>Cuenta</th><th>Debe</th><th>Haber</th></tr></thead>
-              <tbody id="balanzaBody"></tbody>
-            </table>
-          </div>
-          <div class="stats-grid" style="margin-top: 20px;">
-              <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totSumasDebe">Bs 0.00</p></div></div>
-              <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totSumasHaber">Bs 0.00</p></div></div>
-          </div>
-          <div id="mensaje_balanza_cuadre" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-top: 15px;"></div>
+      <div id="balanzaContainer" style="display:none;">
+        <h3 style="margin-bottom: 15px;">Balanza de Comprobación</h3>
+        <div id="mensaje_balanza_cuadre" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center;"></div>
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card"><div class="stat-info"><h3>Sumas Debe</h3><p id="totSumasDebe">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>Sumas Haber</h3><p id="totSumasHaber">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>Saldos Deudor</h3><p id="totSaldosDeudor">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>Saldos Acreedor</h3><p id="totSaldosAcreedor">Bs 0.00</p></div></div>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Código</th><th>Cuenta</th><th>Debe</th><th>Haber</th><th>Saldo Deudor</th><th>Saldo Acreedor</th></tr></thead>
+            <tbody id="balanzaBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-<div id="hoja_trabajo" class="admin-section" style="display:none;">
-      ... (código de la hoja de trabajo) ...
+
+    <div id="hoja_trabajo" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Hoja de Trabajo</h2>
+      <hr>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Código</th><th>Cuenta</th><th>Saldo Ajustado</th></tr></thead>
+          <tbody id="hojaTrabajoBody"></tbody>
+        </table>
+      </div>
+      <hr>
+      <h3>Aplicar Ajuste Contable</h3>
+      <p class="section-hint">El ajuste se registra por partida doble: una cuenta al Debe y otra al Haber.</p>
+
+      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+        <input type="date" id="ajusteFecha" class="input" style="flex:1;">
+        <input type="text" id="ajusteFolio" class="input" placeholder="Folio ajuste" style="flex:1;">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+        <select id="ajusteCuentaDebe" class="input" style="flex:1;"></select>
+        <select id="ajusteCuentaHaber" class="input" style="flex:1;"></select>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+        <input type="number" id="ajusteMonto" class="input" placeholder="Monto de ajuste" step="0.01" style="flex:1;">
+        <input type="text" id="ajusteDetalle" class="input" placeholder="Detalle del ajuste" style="flex:2;">
+      </div>
+
+      <button class="btn-add" onclick="aplicarAjuste()">Aplicar ajuste</button>
+      <hr>
+
+      <h3>Historial de Ajustes</h3>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>ID</th><th>Fecha</th><th>Folio</th><th>Debe</th><th>Haber</th><th>Monto</th><th>Detalle</th></tr></thead>
+          <tbody id="ajustesBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <div id="estado_resultados" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Estado de Resultados</h2>
-      <p style="text-align:center; color:var(--muted); margin-bottom:20px;">Estado de Pérdidas y Ganancias</p>
-      <hr>
-      <button class="btn-add" style="margin-bottom: 20px;" onclick="renderEstadoResultados()">Generar Estado de Resultados</button>
-      
-      <div id="estadoResultadosContainer" style="display: none;">
-          <h3 style="color: #2e7d32; margin-top: 20px;">INGRESOS OPERATIVOS</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Monto (Bs)</th></tr></thead><tbody id="erIngresosBody"></tbody></table>
-          </div>
-          
-          <h3 style="color: #c62828; margin-top: 20px;">COSTOS</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Monto (Bs)</th></tr></thead><tbody id="erCostosBody"></tbody></table>
-          </div>
-
-          <div class="stat-card" style="margin-bottom: 20px; background: #e8f5e9; border-left-color: #2e7d32;">
-            <div class="stat-info"><h3 style="color: #2e7d32;">Utilidad Bruta</h3><p id="erUtilidadBruta" style="color: #2e7d32;">Bs 0.00</p></div>
-          </div>
-
-          <h3 style="color: #e65100; margin-top: 20px;">GASTOS OPERATIVOS</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Monto (Bs)</th></tr></thead><tbody id="erGastosBody"></tbody></table>
-          </div>
-
-          <div class="stat-card" style="margin-bottom: 20px; border-left-color: var(--sidebar-color);">
-            <div class="stat-info"><h3 style="color: var(--sidebar-color);">UTILIDAD NETA DEL EJERCICIO</h3><p id="erUtilidadNeta">Bs 0.00</p></div>
-          </div>
+      <div id="estadoResultadosMensaje" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center; display:none;"></div>
+      <div id="estadoResultadosContainer" style="display:none;">
+        <hr>
+        <h3>Ingresos</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="erIngresosBody"></tbody>
+          </table>
+        </div>
+        <hr>
+        <h3>Costos</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="erCostosBody"></tbody>
+          </table>
+        </div>
+        <hr>
+        <h3>Gastos</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="erGastosBody"></tbody>
+          </table>
+        </div>
+        <hr>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-info"><h3>UTILIDAD BRUTA</h3><p id="erUtilidadBruta">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>UTILIDAD NETA DEL EJERCICIO</h3><p id="erUtilidadNeta">Bs 0.00</p></div></div>
+        </div>
       </div>
     </div>
 
     <div id="balance_general" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">Balance General</h2>
-      <p style="text-align:center; color:var(--warn); font-weight:bold;">Sincronizado con Balance de Apertura + Diario + Ajustes</p>
-      <hr>
-      <button class="btn-add" style="margin-bottom: 20px;" onclick="renderBalanceGeneral()">Generar Balance General</button>
-      
-      <div id="balanceGeneralContainer" style="display: none;">
-          <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-card"><div class="stat-info"><h3>Total Activo</h3><p id="bgTotActivo">Bs 0.00</p></div></div>
-            <div class="stat-card"><div class="stat-info"><h3>Total Pasivo + Patrimonio</h3><p id="bgTotPasPat">Bs 0.00</p></div></div>
-          </div>
-          <div id="mensaje_balance_cuadre" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center;"></div>
+      <div id="balanceGeneralMensaje" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center; display:none;"></div>
+      <div id="balanceGeneralContainer" style="display:none;">
+        <hr>
+        <div id="mensaje_balance_cuadre" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center;"></div>
 
-          <h3 style="margin-top: 30px;">ACTIVO</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgActivosBody"></tbody></table>
-          </div>
-          <h3 style="margin-top: 30px;">PASIVO</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgPasivosBody"></tbody></table>
-          </div>
-          <h3 style="margin-top: 30px;">PATRIMONIO</h3>
-          <div class="table-responsive" style="margin-bottom: 20px;">
-            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgPatrimonioBody"></tbody></table>
-          </div>
-          <hr>
-          <button class="btn-soft" onclick="exportarBalancePDF()">Exportar PDF del Balance</button>
+        <h3>Activos</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="bgActivosBody"></tbody>
+          </table>
+        </div>
+
+        <hr>
+        <h3>Pasivos</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="bgPasivosBody"></tbody>
+          </table>
+        </div>
+
+        <hr>
+        <h3>Patrimonio</h3>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Cuenta</th><th>Monto</th></tr></thead>
+            <tbody id="bgPatrimonioBody"></tbody>
+          </table>
+        </div>
+
+        <hr>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-info"><h3>Total Activo</h3><p id="bgTotActivo">Bs 0.00</p></div></div>
+          <div class="stat-card"><div class="stat-info"><h3>Total Pasivo + Patrimonio</h3><p id="bgTotPasPat">Bs 0.00</p></div></div>
+        </div>
       </div>
     </div>
 
     <div id="inventario" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2rem;">INVENTARIO</h2>
+      <p class="section-hint">Los movimientos de inventario pueden generar asiento contable automático si completas los datos contables del movimiento.</p>
       <hr>
-      <h3>Registrar Movimiento (Entrada / Salida)</h3>
-      <div style="display:flex; gap:10px; margin-bottom: 15px;">
-        <select id="invProducto" class="input" style="flex:2;"></select>
-        <select id="invTipoMov" class="input" style="flex:1;"><option value="Entrada">Entrada</option><option value="Salida">Salida</option></select>
-        <input type="number" id="invCantidad" class="input" min="1" step="1" value="1" style="flex:1;"/>
+
+      <h3>Registrar producto</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <input type="text" id="invNuevoCodigo" class="input" placeholder="Código del producto">
+        <input type="text" id="invNuevoNombre" class="input" placeholder="Nombre del producto">
+        <input type="text" id="invNuevaCategoria" class="input" placeholder="Categoría">
+        <input type="number" id="invNuevoStock" class="input" placeholder="Stock inicial" min="0">
       </div>
-      <input type="text" id="invDetalle" class="input" placeholder="Detalle del Movimiento:" style="margin-bottom: 15px;"/>
-      <button class="btn-add" onclick="registrarMovimiento()">Registrar</button>
+      <button class="btn-add" onclick="agregarProducto()">Agregar producto</button>
 
       <hr>
-      <h3>Stock General</h3>
-      <div class="table-responsive" style="margin-bottom: 20px;">
-        <table><thead><tr><th>Código</th><th>Nombre</th><th>Categoría</th><th>Stock</th></tr></thead><tbody id="invStockBody"></tbody></table>
+
+      <h3>Editar producto</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <select id="invEditarSelect" class="input" onchange="cargarProductoParaEditar()"></select>
+        <input type="text" id="invEditarCodigo" class="input" placeholder="Código">
+        <input type="text" id="invEditarNombre" class="input" placeholder="Nombre">
+        <input type="text" id="invEditarCategoria" class="input" placeholder="Categoría">
+        <input type="number" id="invEditarStock" class="input" placeholder="Stock" min="0">
       </div>
+      <button class="btn-add" onclick="editarProducto()">Guardar cambios</button>
 
       <hr>
-      <h3>Historial de Movimientos</h3>
+
+      <h3>Eliminar producto</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <select id="invEliminarSelect" class="input"></select>
+      </div>
+      <button class="btn-delete-action" onclick="eliminarProducto()">Eliminar producto</button>
+
+      <hr>
+
+      <h3>Registrar movimiento</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <input type="date" id="invFechaMov" class="input">
+        <input type="text" id="invFolioMov" class="input" placeholder="Folio contable del movimiento">
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <select id="invProducto" class="input"></select>
+        <select id="invTipoMov" class="input">
+          <option value="Entrada">Entrada</option>
+          <option value="Salida">Salida</option>
+        </select>
+        <input type="number" id="invCantidad" class="input" placeholder="Cantidad" min="1" value="1">
+        <input type="number" id="invCostoUnitario" class="input" placeholder="Costo/Precio unitario Bs" min="0" step="0.01">
+        <input type="text" id="invDetalle" class="input" placeholder="Detalle del movimiento">
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <select id="invCuentaInventario" class="input"></select>
+        <select id="invCuentaContra" class="input"></select>
+        <select id="invTipoIVA" class="input">
+          <option value="">Sin IVA</option>
+          <option value="credito">Crédito Fiscal IVA</option>
+          <option value="debito">Débito Fiscal IVA</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="registrarMovimiento()">Registrar movimiento</button>
+
+      <hr>
+
+      <h3>Stock actual</h3>
+      <div class="table-responsive" style="margin-bottom:25px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Stock</th>
+            </tr>
+          </thead>
+          <tbody id="invStockBody"></tbody>
+        </table>
+      </div>
+
+      <h3>Historial de movimientos</h3>
       <div class="table-responsive">
-        <table><thead><tr><th>Fecha</th><th>Producto</th><th>Entrada</th><th>Salida</th><th>Detalle</th></tr></thead><tbody id="invMovsBody"></tbody></table>
-      </div>
-      
-      <hr>
-      <h3>Exportaciones</h3>
-      <div class="toolbar">
-          <button class="btn-soft" onclick="exportarInventarioExcel()">Exportar Inventario a Excel</button>
-          <button class="btn-soft" onclick="exportarInventarioPDF()">Exportar Inventario a PDF</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Entrada</th>
+              <th>Salida</th>
+              <th>Base Bs</th>
+              <th>IVA Bs</th>
+              <th>Detalle</th>
+              <th>Folio</th>
+            </tr>
+          </thead>
+          <tbody id="invMovsBody"></tbody>
+        </table>
       </div>
     </div>
 
     <div id="ayuda" class="admin-section" style="display:none;">
       <h2 style="justify-content: center; font-size: 2.2rem; color: var(--sidebar-color); border:none; margin-bottom: 5px;">AYUDA DEL SISTEMA</h2>
       <p style="text-align:center; color:var(--muted); font-size:1.1rem; margin-bottom: 35px;">Guía de uso oficial para Panadería Chelo</p>
+
       <details>
         <summary>¿Qué es este sistema contable?</summary>
         <div class="details-content">
           <p>Bienvenido al <strong>Sistema Contable</strong>, una herramienta diseñada para facilitar la administración financiera de tu empresa.</p>
           <ul style="margin-left: 25px; margin-top: 10px; margin-bottom: 10px;">
-            <li>Registro de asientos contables</li><li>Control del libro diario y mayor</li><li>Generación de reportes financieros</li><li>Manejo del plan de cuentas</li><li>Exportación a Excel y PDF</li>
+            <li>Registro de asientos contables</li>
+            <li>Control del libro diario y mayor</li>
+            <li>Generación de reportes financieros</li>
+            <li>Manejo del plan de cuentas</li>
+            <li>Exportación a Excel y PDF</li>
           </ul>
         </div>
       </details>
+
       <details>
         <summary>Flujo recomendado de uso</summary>
         <div class="details-content">
           <ol style="margin-left: 25px; line-height: 1.9;">
-            <li>Configuración Inicial</li><li>Plan de Cuentas</li><li>Balance Inicial</li><li>Libro Diario</li><li>Libro Mayor y Balanza</li><li>Hoja de Trabajo</li><li>Balance General</li><li>Inventario</li>
+            <li>Configuración Inicial</li>
+            <li>Plan de Cuentas</li>
+            <li>Balance Inicial</li>
+            <li>Libro Diario</li>
+            <li>Libro Mayor y Balanza</li>
+            <li>Hoja de Trabajo</li>
+            <li>Balance General</li>
+            <li>Inventario</li>
           </ol>
         </div>
       </details>
+
       <details>
         <summary>Preguntas frecuentes (FAQ)</summary>
         <div class="details-content">
           <p><strong>¿Cómo registro un asiento?</strong><br>En el módulo Libro Diario, completa el formulario y haz clic en Agregar asiento.</p>
-          <p style="margin-top: 15px;"><strong>¿Puedo eliminar un asiento?</strong><br>Sí, mediante la opción de eliminar por ID o nombre.</p>
-          <p style="margin-top: 15px;"><strong>¿Qué pasa si Debe y Haber no cuadran?</strong><br>El sistema te mostrará una advertencia al calcular los totales.</p>
+          <p style="margin-top: 15px;"><strong>¿Puedo eliminar un asiento?</strong><br>Sí, mediante la opción de eliminar por ID.</p>
+          <p style="margin-top: 15px;"><strong>¿Qué pasa si Debe y Haber no cuadran?</strong><br>El sistema te mostrará una advertencia y bloqueará los estados financieros hasta corregir el descuadre.</p>
         </div>
       </details>
+
       <details>
         <summary>Contacto y soporte técnico</summary>
         <div class="details-content">
           <p>Si necesitas asistencia con el sistema contable, comunícate con soporte.</p>
-          <p style="margin-top: 15px;"><strong>WhatsApp / Teléfono:</strong><br><strong>+591 78652797</strong></p>
+          <p style="margin-top: 15px;"><strong>WhatsApp / Teléfono:</strong><br><strong>+591 68985205</strong></p>
           <p style="margin-top: 15px;"><strong>Horarios de atención:</strong><br>Lunes a Viernes — 08:00 a 20:00<br>Sábados — 08:00 a 13:00</p>
         </div>
       </details>
     </div>
   </div>
 
-<script>
-  const sesion = JSON.parse(localStorage.getItem("py_session"));
-  if (!sesion || !sesion.activa) {
-    window.location.href = "login.html";
-  }
-</script>
-<script src="app.js"></script>
+  <script>
+    const sesion = JSON.parse(localStorage.getItem("py_session"));
+    if (!sesion || !sesion.activa) {
+      window.location.href = "login.html";
+    }
+  </script>
+  <script src="app.js"></script>
 </body>
 </html>
