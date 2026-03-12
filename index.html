@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panadería Chelo | Sistema Contable</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+ <div class="sidebar" id="sidebar">
+    <img id="sidebarLogo" src="" alt="Logo Empresa" style="display: none; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin: 0 auto 10px auto; border: 2px solid var(--accent-color);">
+    
+    <h2 id="sidebarEmpresa">PANADERÍA CHELO</h2>
+    
+    <div class="sidebar-subtitle">Gestión Contable & Stock</div>
+    <nav>
+      <a href="#" class="active" onclick="showSection('usuarios', this)">Usuarios</a>
+      <a href="#" onclick="showSection('configuracion', this)">Configuración Inicial</a>
+      <a href="#" onclick="showSection('plan_cuentas', this)">Plan de Cuentas</a>
+      <a href="#" onclick="showSection('balance_inicial', this)">Balance inicial</a>
+      <div class="nav-separator"></div>
+      <a href="#" onclick="showSection('libro_diario', this)">Libro Diario</a>
+      <a href="#" onclick="showSection('libro_mayor', this)">Libro Mayor</a>
+      <a href="#" onclick="showSection('hoja_trabajo', this)">Hoja de Trabajo</a>
+      <a href="#" onclick="showSection('balance_general', this)">Balance General</a>
+      <div class="nav-separator"></div>
+      <a href="#" onclick="showSection('inventario', this)">Inventario</a>
+      <a href="#" onclick="showSection('ayuda', this)">Ayuda</a>
+      <div class="nav-separator"></div>
+      <a href="#" class="logout" onclick="cerrarSesion()">Cerrar Sesión</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>Panel de Control Financiero</h1>
+      <span id="headerUserName">Administrador General</span>
+    </header>
+
+    <div id="usuarios" class="admin-section">
+      <h2 style="justify-content: center; font-size: 2rem;">Administración de Usuarios</h2>
+      <hr>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Nombre de Usuario</th><th>Contraseña</th><th>Rol</th></tr></thead>
+          <tbody id="usuariosBody"></tbody>
+        </table>
+      </div>
+      <hr>
+      <h3>Registrar nuevo usuario</h3>
+      <input type="text" id="nuevo_usuario" class="input" placeholder="Nombre de usuario" style="margin-bottom: 12px;"/>
+      <input type="password" id="nueva_contra" class="input" placeholder="Contraseña" style="margin-bottom: 12px;"/>
+      <select id="nuevo_rol" class="input" style="margin-bottom: 15px;">
+        <option value="Administrador">Administrador</option><option value="Gerente">Gerente</option><option value="Contador">Contador</option><option value="Empleado">Empleado</option>
+      </select>
+      <button class="btn-add" onclick="guardarUsuario()">Guardar usuario</button>
+      <hr>
+      <h3>Eliminar usuario</h3>
+      <input type="text" id="usuario_eliminar" class="input" placeholder="Escribe el nombre del usuario a eliminar:" style="margin-bottom: 15px;"/>
+      <button class="btn-delete-action" onclick="eliminarUsuarioInput()">Eliminar usuario</button>
+    </div>
+
+    <div id="configuracion" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Configuración Inicial de la Empresa</h2>
+      <hr>
+      <div class="cards-2">
+        <div class="mini-card">
+          <label style="font-weight:900;">Nombre de la Empresa</label><input type="text" id="editNombre" class="input" style="margin-bottom: 15px;"/>
+          <label style="font-weight:900;">Rubro</label><input type="text" id="editRubro" class="input" style="margin-bottom: 15px;"/>
+          <label style="font-weight:900;">Dirección</label><input type="text" id="editDireccion" class="input" style="margin-bottom: 15px;"/>
+        </div>
+        <div class="mini-card">
+          <label style="font-weight:900;">Teléfono</label><input type="text" id="editTelefono" class="input" style="margin-bottom: 15px;"/>
+          <label style="font-weight:900;">Correo Electrónico</label><input type="email" id="editCorreo" class="input" style="margin-bottom: 15px;"/>
+          <label style="font-weight:900;">Representante Legal</label><input type="text" id="editRepresentante" class="input" style="margin-bottom: 15px;"/>
+        </div>
+      </div>
+      <h3>Subir / Cambiar Logo</h3>
+      <input type="file" id="editLogo" class="input" accept="image/png, image/jpeg, image/jpg" style="margin-bottom: 20px;"/>
+      <button class="btn-add" onclick="guardarConfiguracion()">Guardar Cambios</button>
+    </div>
+
+    <div id="plan_cuentas" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Plan de Cuentas</h2>
+      <hr>
+      <div class="table-responsive" style="margin-bottom: 20px;">
+        <table>
+          <thead><tr><th style="width:180px;">Código</th><th>Nombre de la Cuenta</th></tr></thead>
+          <tbody id="cuentasBody"></tbody>
+        </table>
+      </div>
+      <button class="btn-soft" onclick="exportarCuentasPDF()">Exportar Plan de Cuentas a PDF</button>
+      <hr>
+      <h3>Agregar Cuenta</h3>
+      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+        <input type="text" id="nueva_cuenta_codigo" class="input" placeholder="Código (Ej: 1.1.01)"/>
+        <input type="text" id="nueva_cuenta_nombre" class="input" placeholder="Nombre (Ej: Caja)"/>
+      </div>
+      <button class="btn-add" onclick="guardarCuenta()">Agregar Cuenta</button>
+      <hr>
+      <h3>Eliminar Cuenta</h3>
+      <input type="text" id="cuenta_eliminar" class="input" placeholder="Escribe el código o nombre de la cuenta:" style="margin-bottom: 15px;"/>
+      <button class="btn-delete-action" onclick="eliminarCuentaInput()">Eliminar cuenta</button>
+    </div>
+
+    <div id="balance_inicial" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Asiento de Apertura</h2>
+      <hr>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Código</th><th>Cuenta</th><th>Monto Apertura</th></tr></thead>
+          <tbody id="balanceBody"></tbody>
+        </table>
+      </div>
+      <hr>
+      <h3>Registrar Saldo Inicial</h3>
+      <div class="toolbar" style="margin-bottom: 15px;">
+        <select id="selectCuentaBalance" class="input" style="flex: 2;"></select>
+        <input type="number" id="montoBalance" class="input" placeholder="Monto Bs" style="flex: 1;"/>
+      </div>
+      <button class="btn-add" onclick="agregarSaldoInicial()">Agregar al Asiento</button>
+      <hr>
+      <h3>Eliminar Saldo</h3>
+      <input type="number" id="balance_eliminar" class="input" placeholder="Escribe el índice (fila) a eliminar (Ej: 0, 1, 2):" style="margin-bottom: 15px;"/>
+      <button class="btn-delete-action" onclick="eliminarSaldoInput()">Eliminar saldo</button>
+      <hr>
+      <div id="mensaje_ecuacion_contable" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center; border: 1px solid transparent;"></div>
+      <div class="stats-grid" style="margin-bottom: 20px;">
+        <div class="stat-card"><div class="stat-info"><h3>Total Activos</h3><p id="totActivo">Bs 0.00</p></div></div>
+        <div class="stat-card"><div class="stat-info"><h3>Total Pasivos</h3><p id="totPasivo">Bs 0.00</p></div></div>
+        <div class="stat-card"><div class="stat-info"><h3>Total Capital</h3><p id="totCapital">Bs 0.00</p></div></div>
+      </div>
+    </div>
+
+    <div id="libro_diario" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Libro Diario</h2>
+      <hr>
+      <h3>Registrar Asiento</h3>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <div style="flex:1;"><label style="font-weight:900;">Fecha</label><input type="date" id="asientoFecha" class="input"/></div>
+        <div style="flex:2;"><label style="font-weight:900;">Cuenta</label><select id="asientoCuenta" class="input"></select></div>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <div style="flex:1;"><label style="font-weight:900;">Folio</label><input type="text" id="asientoFolio" class="input"/></div>
+        <div style="flex:1;"><label style="font-weight:900;">Debe</label><input type="number" id="asientoDebe" class="input" value="0.00"/></div>
+        <div style="flex:1;"><label style="font-weight:900;">Haber</label><input type="number" id="asientoHaber" class="input" value="0.00"/></div>
+      </div>
+      <label style="font-weight:900;">Glosa</label><input type="text" id="asientoDetalle" class="input" style="margin-bottom: 15px;"/>
+      <button class="btn-add" onclick="guardarAsiento()">Agregar al Diario</button>
+      <hr>
+      <h3>Eliminar Asiento</h3>
+      <input type="number" id="asiento_eliminar" class="input" placeholder="Ingrese el ID del registro a eliminar:" style="margin-bottom: 15px;"/>
+      <button class="btn-delete-action" onclick="eliminarAsientoInput()">Eliminar registro</button>
+      <hr>
+      <div style="text-align: center; margin-bottom: 20px;">
+          <button class="btn-add" style="background:#e65100; font-size: 1.1rem; padding: 15px 30px;" onclick="verificarTotalesDiario()">Verificar y calcular totales</button>
+      </div>
+      <div id="diarioTotalesContainer" style="display:none;">
+          <div class="stats-grid" style="margin-bottom: 20px;">
+            <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totLibroDebe">Bs 0.00</p></div></div>
+            <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totLibroHaber">Bs 0.00</p></div></div>
+          </div>
+          <div id="estadoCuadreLibro" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-bottom: 20px;"></div>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>ID</th><th>Fecha</th><th>Código</th><th>Cuenta</th><th>Folio</th><th>Debe</th><th>Haber</th><th>Detalle</th></tr></thead>
+          <tbody id="libroDiarioBody"></tbody>
+        </table>
+      </div>
+      <hr>
+      <h3>Exportar Libro Diario</h3>
+      <div class="toolbar">
+          <button class="btn-soft" onclick="exportarDiarioExcel()">Exportar a Excel</button>
+          <button class="btn-soft" onclick="exportarDiarioPDF()">Exportar a PDF</button>
+      </div>
+    </div>
+
+    <div id="libro_mayor" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Libro Mayor</h2>
+      <p style="text-align:center; color:var(--warn); font-weight:bold;">NOTA: El Mayor y la Balanza ahora incluyen los saldos de Apertura automáticamente.</p>
+      <hr>
+      <h3 style="color:var(--sidebar-color); margin-bottom: 15px;">Seleccionar Cuenta</h3>
+      <select id="selectMayorCuenta" class="input" style="max-width: 400px; margin-bottom: 20px;" onchange="renderMayorPorCuenta()"></select>
+      
+      <div class="table-responsive" style="margin-bottom: 30px;">
+        <table>
+          <thead><tr><th>Fecha</th><th>Folio</th><th>Detalle</th><th>Debe</th><th>Haber</th></tr></thead>
+          <tbody id="mayorCuentaBody"></tbody>
+        </table>
+      </div>
+
+      <hr>
+      <h2 style="justify-content: center; font-size: 2rem;">Balanza de Comprobación</h2>
+      <button class="btn-add" style="margin-bottom: 20px;" onclick="renderBalanzaComprobacion()">Generar Balanza Completa</button>
+
+      <div id="balanzaContainer" style="display: none;">
+          <div class="table-responsive">
+            <table>
+              <thead><tr><th>Código</th><th>Cuenta</th><th>Debe</th><th>Haber</th></tr></thead>
+              <tbody id="balanzaBody"></tbody>
+            </table>
+          </div>
+          <div class="stats-grid" style="margin-top: 20px;">
+              <div class="stat-card"><div class="stat-info"><h3>Total Debe</h3><p id="totSumasDebe">Bs 0.00</p></div></div>
+              <div class="stat-card"><div class="stat-info"><h3>Total Haber</h3><p id="totSumasHaber">Bs 0.00</p></div></div>
+          </div>
+          <div id="mensaje_balanza_cuadre" style="padding: 15px; border-radius: 10px; font-weight: 900; text-align: center; margin-top: 15px;"></div>
+      </div>
+    </div>
+
+    <div id="hoja_trabajo" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Hoja de Trabajo</h2>
+      <hr>
+      <h3>Realizar Ajuste Manual</h3>
+      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+        <input type="text" id="ajusteCodigo" class="input" placeholder="Código de la cuenta"/>
+        <input type="number" id="ajusteMonto" class="input" placeholder="Monto a ajustar (+ o -)"/>
+      </div>
+      <button class="btn-add" onclick="aplicarAjuste()">Aplicar Ajuste</button>
+      <hr>
+      <div class="table-responsive">
+        <table>
+          <thead><tr><th>Código</th><th>Cuenta</th><th>Saldo Ajustado</th></tr></thead>
+          <tbody id="hojaTrabajoBody"></tbody>
+        </table>
+      </div>
+      <hr>
+      <button class="btn-soft" onclick="exportarHojaPDF()">Exportar PDF</button>
+    </div>
+
+    <div id="balance_general" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">Balance General</h2>
+      <p style="text-align:center; color:var(--warn); font-weight:bold;">Sincronizado con Balance de Apertura + Diario + Ajustes</p>
+      <hr>
+      <button class="btn-add" style="margin-bottom: 20px;" onclick="renderBalanceGeneral()">Generar Balance General</button>
+      
+      <div id="balanceGeneralContainer" style="display: none;">
+          <div class="stats-grid" style="margin-bottom: 20px;">
+            <div class="stat-card"><div class="stat-info"><h3>Total Activo</h3><p id="bgTotActivo">Bs 0.00</p></div></div>
+            <div class="stat-card"><div class="stat-info"><h3>Total Pasivo + Patrimonio</h3><p id="bgTotPasPat">Bs 0.00</p></div></div>
+          </div>
+          <div id="mensaje_balance_cuadre" style="padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 900; text-align: center;"></div>
+
+          <h3 style="margin-top: 30px;">ACTIVO</h3>
+          <div class="table-responsive" style="margin-bottom: 20px;">
+            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgActivosBody"></tbody></table>
+          </div>
+          <h3 style="margin-top: 30px;">PASIVO</h3>
+          <div class="table-responsive" style="margin-bottom: 20px;">
+            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgPasivosBody"></tbody></table>
+          </div>
+          <h3 style="margin-top: 30px;">PATRIMONIO</h3>
+          <div class="table-responsive" style="margin-bottom: 20px;">
+            <table><thead><tr><th>Cuenta</th><th>Saldo</th></tr></thead><tbody id="bgPatrimonioBody"></tbody></table>
+          </div>
+          <hr>
+          <button class="btn-soft" onclick="exportarBalancePDF()">Exportar PDF del Balance</button>
+      </div>
+    </div>
+
+    <div id="inventario" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2rem;">INVENTARIO</h2>
+      <hr>
+      <h3>Registrar Movimiento (Entrada / Salida)</h3>
+      <div style="display:flex; gap:10px; margin-bottom: 15px;">
+        <select id="invProducto" class="input" style="flex:2;"></select>
+        <select id="invTipoMov" class="input" style="flex:1;"><option value="Entrada">Entrada</option><option value="Salida">Salida</option></select>
+        <input type="number" id="invCantidad" class="input" min="1" step="1" value="1" style="flex:1;"/>
+      </div>
+      <input type="text" id="invDetalle" class="input" placeholder="Detalle del Movimiento:" style="margin-bottom: 15px;"/>
+      <button class="btn-add" onclick="registrarMovimiento()">Registrar</button>
+
+      <hr>
+      <h3>Stock General</h3>
+      <div class="table-responsive" style="margin-bottom: 20px;">
+        <table><thead><tr><th>Código</th><th>Nombre</th><th>Categoría</th><th>Stock</th></tr></thead><tbody id="invStockBody"></tbody></table>
+      </div>
+
+      <hr>
+      <h3>Historial de Movimientos</h3>
+      <div class="table-responsive">
+        <table><thead><tr><th>Fecha</th><th>Producto</th><th>Entrada</th><th>Salida</th><th>Detalle</th></tr></thead><tbody id="invMovsBody"></tbody></table>
+      </div>
+      
+      <hr>
+      <h3>Exportaciones</h3>
+      <div class="toolbar">
+          <button class="btn-soft" onclick="exportarInventarioExcel()">Exportar Inventario a Excel</button>
+          <button class="btn-soft" onclick="exportarInventarioPDF()">Exportar Inventario a PDF</button>
+      </div>
+    </div>
+
+    <div id="ayuda" class="admin-section" style="display:none;">
+      <h2 style="justify-content: center; font-size: 2.2rem; color: var(--sidebar-color); border:none; margin-bottom: 5px;">AYUDA DEL SISTEMA</h2>
+      <p style="text-align:center; color:var(--muted); font-size:1.1rem; margin-bottom: 35px;">Guía de uso oficial para Panadería Chelo</p>
+      <details>
+        <summary>¿Qué es este sistema contable?</summary>
+        <div class="details-content">
+          <p>Bienvenido al <strong>Sistema Contable</strong>, una herramienta diseñada para facilitar la administración financiera de tu empresa.</p>
+          <ul style="margin-left: 25px; margin-top: 10px; margin-bottom: 10px;">
+            <li>Registro de asientos contables</li><li>Control del libro diario y mayor</li><li>Generación de reportes financieros</li><li>Manejo del plan de cuentas</li><li>Exportación a Excel y PDF</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Flujo recomendado de uso</summary>
+        <div class="details-content">
+          <ol style="margin-left: 25px; line-height: 1.9;">
+            <li>Configuración Inicial</li><li>Plan de Cuentas</li><li>Balance Inicial</li><li>Libro Diario</li><li>Libro Mayor y Balanza</li><li>Hoja de Trabajo</li><li>Balance General</li><li>Inventario</li>
+          </ol>
+        </div>
+      </details>
+      <details>
+        <summary>Preguntas frecuentes (FAQ)</summary>
+        <div class="details-content">
+          <p><strong>¿Cómo registro un asiento?</strong><br>En el módulo Libro Diario, completa el formulario y haz clic en Agregar asiento.</p>
+          <p style="margin-top: 15px;"><strong>¿Puedo eliminar un asiento?</strong><br>Sí, mediante la opción de eliminar por ID o nombre.</p>
+          <p style="margin-top: 15px;"><strong>¿Qué pasa si Debe y Haber no cuadran?</strong><br>El sistema te mostrará una advertencia al calcular los totales.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Contacto y soporte técnico</summary>
+        <div class="details-content">
+          <p>Si necesitas asistencia con el sistema contable, comunícate con soporte.</p>
+          <p style="margin-top: 15px;"><strong>WhatsApp / Teléfono:</strong><br><strong>+591 78652797</strong></p>
+          <p style="margin-top: 15px;"><strong>Horarios de atención:</strong><br>Lunes a Viernes — 08:00 a 20:00<br>Sábados — 08:00 a 13:00</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+<script>
+  const sesion = JSON.parse(localStorage.getItem("py_session"));
+  if (!sesion || !sesion.activa) {
+    window.location.href = "login.html";
+  }
+</script>
+<script src="app.js"></script>
+</body>
+</html>
