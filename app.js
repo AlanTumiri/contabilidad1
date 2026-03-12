@@ -1552,7 +1552,26 @@ function exportarInventarioPDF() {
   doc.text("INVENTARIO DE PANADERÍA", 20, 20);
   doc.save("Inventario.pdf");
 }
+function exportarBalanceInicialPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("BALANCE INICIAL", 20, 20);
+  doc.save("Balance_Inicial.pdf");
+}
 
+function exportarMayorPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("LIBRO MAYOR", 20, 20);
+  doc.save("Libro_Mayor.pdf");
+}
+
+function exportarEstadoResultadosPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("ESTADO DE RESULTADOS", 20, 20);
+  doc.save("Estado_Resultados.pdf");
+}
 // ====== INICIO ======
 window.addEventListener("DOMContentLoaded", () => {
   const sesion = JSON.parse(localStorage.getItem("py_session"));
